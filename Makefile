@@ -1,11 +1,9 @@
 .SILENT:
 .PHONY: build build-linux build-windows pack
-
+export GO111MODULE=on
 APP:=categraf
-ROOT:=$(shell pwd -P)
-GIT_COMMIT:=$(shell git --work-tree ${ROOT}  rev-parse 'HEAD^{commit}')
-_GIT_VERSION:=$(shell git --work-tree ${ROOT} describe --tags --abbrev=14 "${GIT_COMMIT}^{commit}" 2>/dev/null)
-TAG=$(shell echo "${_GIT_VERSION}" |  awk -F"-" '{print $$1}')
+GIT_COMMIT:="12fa6dfdc52d576b067c71f37f75d443c5c0e9dd"
+TAG="v0.3.45"
 GIT_VERSION:="$(TAG)-$(GIT_COMMIT)"
 BUILD_VERSION:='flashcat.cloud/categraf/config.Version=$(GIT_VERSION)'
 LDFLAGS:="-w -s -X $(BUILD_VERSION)"

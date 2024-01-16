@@ -29,6 +29,7 @@ func heartbeatCron(ctx context.Context, ib *config.IbexConfig) {
 }
 
 func heartbeat() {
+	// 主机标识 用于资产管理
 	ident := config.Config.GetHostname()
 	req := types.ReportRequest{
 		Ident:       ident,
@@ -79,6 +80,7 @@ func Start() {
 	sc := make(chan os.Signal, 1)
 	signal.Notify(sc, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	ctx, cancel := context.WithCancel(context.Background())
+	// 发送心跳用于资产注册
 	go heartbeatCron(ctx, config.Config.Ibex)
 
 EXIT:

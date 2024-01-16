@@ -58,6 +58,7 @@ type Provider interface {
 
 func NewProvider(c *config.ConfigType, op InputOperation) ([]Provider, error) {
 	log.Println("I! use input provider:", c.Global.Providers)
+	log.Println("I! use input provider:", c.Global.Providers)
 	// 不添加provider配置 则默认使用local
 	// 兼容老版本
 	if len(c.Global.Providers) == 0 {
@@ -75,6 +76,7 @@ func NewProvider(c *config.ConfigType, op InputOperation) ([]Provider, error) {
 		}
 		switch name {
 		case "http":
+			log.Println(c, op)
 			provider, err := newHTTPProvider(c, op)
 			if err != nil {
 				return nil, err

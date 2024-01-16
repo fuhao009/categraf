@@ -78,18 +78,30 @@ func (c *CPUStats) Gather(slist *types.SampleList) {
 			continue
 		}
 
+		// 定义一个包含CPU使用率字段和对应值的map
 		fields := map[string]interface{}{
-			"user":       100 * (cts.User - lastCts.User - (cts.Guest - lastCts.Guest)) / totalDelta,
-			"system":     100 * (cts.System - lastCts.System) / totalDelta,
-			"idle":       100 * (cts.Idle - lastCts.Idle) / totalDelta,
-			"nice":       100 * (cts.Nice - lastCts.Nice - (cts.GuestNice - lastCts.GuestNice)) / totalDelta,
-			"iowait":     100 * (cts.Iowait - lastCts.Iowait) / totalDelta,
-			"irq":        100 * (cts.Irq - lastCts.Irq) / totalDelta,
-			"softirq":    100 * (cts.Softirq - lastCts.Softirq) / totalDelta,
-			"steal":      100 * (cts.Steal - lastCts.Steal) / totalDelta,
-			"guest":      100 * (cts.Guest - lastCts.Guest) / totalDelta,
+			// 用户态使用CPU的时间比例，计算公式为 (当前用户态时间 - 上次用户态时间 - (当前虚拟机用户态时间 - 上次虚拟机用户态时间)) / 总增量
+			"user": 100 * (cts.User - lastCts.User - (cts.Guest - lastCts.Guest)) / totalDelta,
+			// 系统态使用CPU的时间比例，计算公式为 (当前系统态时间 - 上次系统态时间) / 总增量
+			"system": 100 * (cts.System - lastCts.System) / totalDelta,
+			// CPU处于空闲状态的时间比例，计算公式为 (当前空闲时间 - 上次空闲时间) / 总增量
+			"idle": 100 * (cts.Idle - lastCts.Idle) / totalDelta,
+			// 用户态使用CPU的时间比例（低优先级），计算公式为 (当前低优先级用户态时间 - 上次低优先级用户态时间 - (当前虚拟机低优先级用户态时间 - 上次虚拟机低优先级用户态时间)) / 总增量
+			"nice": 100 * (cts.Nice - lastCts.Nice - (cts.GuestNice - lastCts.GuestNice)) / totalDelta,
+			// CPU等待I/O完成的时间比例，计算公式为 (当前I/O等待时间 - 上次I/O等待时间) / 总增量
+			"iowait": 100 * (cts.Iowait - lastCts.Iowait) / totalDelta,
+			// 处理硬件中断的时间比例，计算公式为 (当前硬件中断时间 - 上次硬件中断时间) / 总增量
+			"irq": 100 * (cts.Irq - lastCts.Irq) / totalDelta,
+			// 处理软件中断的时间比例，计算公式为 (当前软件中断时间 - 上次软件中断时间) / 总增量
+			"softirq": 100 * (cts.Softirq - lastCts.Softirq) / totalDelta,
+			// 抢占时间比例，计算公式为 (当前抢占时间 - 上次抢占时间) / 总增量
+			"steal": 100 * (cts.Steal - lastCts.Steal) / totalDelta,
+			// 虚拟机运行在非特权级别的时间比例，计算公式为 (当前虚拟机非特权态时间 - 上次虚拟机非特权态时间) / 总增量
+			"guest": 100 * (cts.Guest - lastCts.Guest) / totalDelta,
+			// 虚拟机运行在低优先级非特权级别的时间比例，计算公式为 (当前虚拟机低优先级非特权态时间 - 上次虚拟机低优先级非特权态时间) / 总增量
 			"guest_nice": 100 * (cts.GuestNice - lastCts.GuestNice) / totalDelta,
-			"active":     100 * (active - lastActive) / totalDelta,
+			// 活跃CPU时间的比例，计算公式为 (当前活跃时间 - 上次活跃时间) / 总增量
+			"active": 100 * (active - lastActive) / totalDelta,
 		}
 
 		slist.PushSamples("cpu_usage", fields, tags)

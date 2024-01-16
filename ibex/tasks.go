@@ -14,6 +14,7 @@ type LocalTasksT struct {
 
 var Locals = &LocalTasksT{M: make(map[int64]*Task)}
 
+// 输出执行结果
 func (lt *LocalTasksT) ReportTasks() []types.ReportTask {
 	ret := make([]types.ReportTask, 0, len(lt.M))
 	for id, t := range lt.M {
