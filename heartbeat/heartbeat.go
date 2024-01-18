@@ -65,7 +65,8 @@ func newHTTPClient() (*http.Client, error) {
 		MaxIdleConnsPerHost:   config.Config.Heartbeat.MaxIdleConnsPerHost,
 	}
 
-	if strings.HasPrefix(config.Config.Heartbeat.Url, "https:") {
+	if config.Config.Heartbeat.UseTLS || strings.HasPrefix(config.Config.Heartbeat.Url, "https:") {
+		config.Config.Heartbeat.UseTLS = true
 		tlsCfg, err := config.Config.Heartbeat.TLSConfig()
 		if err != nil {
 			log.Println("E! failed to init tls:", err)
@@ -74,7 +75,6 @@ func newHTTPClient() (*http.Client, error) {
 
 		trans.TLSClientConfig = tlsCfg
 	}
-
 	client := &http.Client{
 		Transport: trans,
 		Timeout:   timeout,
